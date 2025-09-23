@@ -68,8 +68,6 @@ export default function Login({ onLogin }: { onLogin: (user: UserCredo) => void 
             </Paper>
         </Box>
     )
-
-
 }
 
 
