@@ -10,8 +10,8 @@ interface HomeProps {
 }
 
 export const Home = ({userName, messages, currentMessage, onMessageChange, onSendMessage}: HomeProps) => (
-        <Box display="flex" height="80vh" gap={2} pb={10}>
-            <Paper elevation={3} sx={{width: 260, p: 2, display: "flex", flexDirection: "column",}}>
+        <Box display="flex" flexDirection={{ xs: "column", md: "row" }} height={{ xs: "auto", md: "80vh" }} gap={2} pb={10}>
+            <Paper elevation={3} sx={{width:{ xs: "100%", md: 260 }, p: 2, display: "flex", flexDirection: "column"}}>
                 <RoomList />
             </Paper>
             <Paper elevation={3} sx={{flex: 1, p: 2, display: "flex", flexDirection: "column"}}>

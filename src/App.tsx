@@ -12,7 +12,7 @@ function App() {
     const [user, setUser] = useState<UserCredo | null>(null);
     if (!user) return <LoginPage onLogin={setUser} />;
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, display: "flex", gap: 3, flexDirection: "column" }}>
+        <Container maxWidth="lg" sx={{mt: {xs: 2, sm: 3, md: 4},display: "flex",gap: {xs: 2, sm: 3},flexDirection:"column"}}>
             <Profile user={user} />
             <HomePage user={user} />
         </Container>
