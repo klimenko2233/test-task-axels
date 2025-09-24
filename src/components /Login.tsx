@@ -9,8 +9,7 @@ interface LoginProps {
     onSubmit: () => void;
 }
 
-export const Login = ({name, password, onNameChange, onPasswordChange, onSubmit}: LoginProps) => {
-    return (
+export const Login = ({name, password, onNameChange, onPasswordChange, onSubmit}: LoginProps) => (
         <Box
             display="flex"
             justifyContent="center"
@@ -53,8 +52,6 @@ export const Login = ({name, password, onNameChange, onPasswordChange, onSubmit}
                 </Button>
             </Paper>
         </Box>
-    );
-};
-
+);
 
 

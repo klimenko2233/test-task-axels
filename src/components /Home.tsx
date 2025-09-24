@@ -9,28 +9,18 @@ interface HomeProps {
     onSendMessage: () => void;
 }
 
-export const Home = ({userName, messages, currentMessage, onMessageChange, onSendMessage}: HomeProps) => {
-    return (
+export const Home = ({userName, messages, currentMessage, onMessageChange, onSendMessage}: HomeProps) => (
         <Box display="flex" height="80vh" gap={2} pb={10}>
             <Paper
                 elevation={3}
-                sx={{
-                    width: 260,
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                }}
+                sx={{width: 260, p: 2, display: "flex", flexDirection: "column",}}
             >
                 <RoomList />
             </Paper>
 
             <Paper
                 elevation={3}
-                sx={{
-                    flex: 1,
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
+                sx={{flex: 1, p: 2, display: "flex", flexDirection: "column",
                 }}
             >
                 <Typography variant="h6" gutterBottom>
@@ -40,12 +30,7 @@ export const Home = ({userName, messages, currentMessage, onMessageChange, onSen
                 <Box
                     flex={1}
                     my={2}
-                    sx={{
-                        overflowY: "auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 1,
-                    }}
+                    sx={{overflowY: "auto", display: "flex", flexDirection: "column", gap: 1}}
                 >
                     {messages.map((msg, idx) => (
                         <Typography key={idx} variant="body1">
@@ -69,6 +54,5 @@ export const Home = ({userName, messages, currentMessage, onMessageChange, onSen
                 </Box>
             </Paper>
         </Box>
-    );
-};
+);
 

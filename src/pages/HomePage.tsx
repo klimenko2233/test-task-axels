@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home } from "../components";
+import { Home } from "../components ";
 
 interface HomePageProps {
     user: { name: string };

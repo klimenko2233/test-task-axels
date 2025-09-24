@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Container } from "@mui/material";
-import { Profile } from "./components";
 import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
+import {Profile} from "./components ";
 
 export interface UserCredo {
     name: string;

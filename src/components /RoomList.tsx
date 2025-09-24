@@ -2,8 +2,7 @@ import {List,ListItem,ListItemButton,ListItemText,Typography,Button,Box,IconButt
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export const RoomList = () => {
-    return (
+export const RoomList = () => (
         <Box>
             <Box
                 display="flex"
@@ -46,6 +45,5 @@ export const RoomList = () => {
                 ))}
             </List>
         </Box>
-    );
-};
+);
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Login } from "../components";
 import type { UserCredo } from "../App";
+import { Login } from "../components ";
 
 interface LoginPageProps {
     onLogin: (user: UserCredo) => void;

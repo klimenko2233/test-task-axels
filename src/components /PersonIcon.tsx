@@ -1,5 +1,1 @@
-export const PersonIcon = () => {
-    return (
-        <></>
-    );
-};
+export const PersonIcon = () => (<></>);
