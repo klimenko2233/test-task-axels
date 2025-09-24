@@ -25,8 +25,7 @@ export const HomePage = ({ user }: HomePageProps) => {
             messages={messages}
             currentMessage={currentMessage}
             onMessageChange={setCurrentMessage}
-            onSendMessage={handleSendMessage}
-        />
+            onSendMessage={handleSendMessage}/>
     );
 };
 

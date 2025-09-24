@@ -7,4 +7,5 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>
         <CssBaseline/>
         <App/>
-    </ThemeProvider>)
+    </ThemeProvider>
+)

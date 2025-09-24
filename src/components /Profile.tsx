@@ -6,8 +6,6 @@ export const Profile = ({ user }: { user: { name: string } }) => (
                 {user.name[0].toUpperCase()}
             </Avatar>
             <Typography variant="subtitle1">{user.name}</Typography>
-            <Typography variant="caption" color="text.secondary">
-                Online
-            </Typography>
+            <Typography variant="caption" color="text.secondary">Online</Typography>
         </Paper>
 );

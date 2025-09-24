@@ -4,29 +4,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 export const RoomList = () => (
         <Box>
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-            >
-                <Typography variant="subtitle1" fontWeight="bold">
-                    Rooms List
-                </Typography>
-                <Button
-                    variant="contained"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                >
-                    Create Room
-                </Button>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="subtitle1" fontWeight="bold">Rooms List</Typography>
+                <Button variant="contained" size="small" sx={{ textTransform: "none" }}>Create Room</Button>
             </Box>
             <Divider />
             <List sx={{ p: 0 }}>
                 {["General", "Frontend", "Backend", "Random"].map((room) => (
-                    <ListItem
-                        key={room}
-                        secondaryAction={
+                    <ListItem key={room} secondaryAction={
                             <Box display="flex" gap={1}>
                                 <IconButton size="small" edge="end" aria-label="edit">
                                     <EditIcon fontSize="small" />
@@ -34,12 +19,9 @@ export const RoomList = () => (
                                 <IconButton size="small" edge="end" aria-label="delete">
                                     <DeleteIcon fontSize="small" />
                                 </IconButton>
-                            </Box>
-                        }
-                        disablePadding
-                    >
+                            </Box>} disablePadding>
                         <ListItemButton sx={{ borderRadius: 1 }}>
-                            <ListItemText primary={room} />
+                            <ListItemText primary={room}/>
                         </ListItemButton>
                     </ListItem>
                 ))}

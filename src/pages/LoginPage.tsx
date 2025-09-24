@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { UserCredo } from "../App";
+import type { UserCredo } from "../App.tsx";
 import { Login } from "../components ";
 
 interface LoginPageProps {
@@ -11,9 +11,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     const [password, setPassword] = useState("");
 
     const handleLogin = () => {
-        if (name.trim() && password.trim()) {
-            onLogin({ name, password });
-        }
+        if (name.trim() && password.trim()) onLogin({ name, password });
     };
 
     return (
