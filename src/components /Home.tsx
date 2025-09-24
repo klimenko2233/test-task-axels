@@ -1,46 +1,42 @@
-import {
-    Box,
-    Button,
-    Divider,
-    Paper,
-    TextField,
-    Typography
-} from "@mui/material";
-import { RoomList } from "./RoomList.tsx";
+import {Box,Button,Divider,Paper,TextField,Typography} from "@mui/material";
+import { RoomList } from "./RoomList";
 
-export const Home = ({ user }: { user: { name: string } }) => {
+interface HomeProps {
+    userName: string;
+    messages: { author: string; text: string }[];
+    currentMessage: string;
+    onMessageChange: (value: string) => void;
+    onSendMessage: () => void;
+}
+
+export const Home = ({userName, messages, currentMessage, onMessageChange, onSendMessage}: HomeProps) => {
     return (
         <Box display="flex" height="80vh" gap={2} pb={10}>
-            {/* Sidebar with rooms list*/}
             <Paper
                 elevation={3}
                 sx={{
                     width: 260,
                     p: 2,
                     display: "flex",
-                    flexDirection: "column"
+                    flexDirection: "column",
                 }}
             >
                 <RoomList />
             </Paper>
 
-            {/* General chat room */}
             <Paper
                 elevation={3}
                 sx={{
                     flex: 1,
                     p: 2,
                     display: "flex",
-                    flexDirection: "column"
+                    flexDirection: "column",
                 }}
             >
-                {/* Title */}
                 <Typography variant="h6" gutterBottom>
-                    Welcome, {user.name}! It's a general chat room.
+                    Welcome, {userName}! It's a general chat room.
                 </Typography>
                 <Divider />
-
-                {/* Messages */}
                 <Box
                     flex={1}
                     my={2}
@@ -48,27 +44,31 @@ export const Home = ({ user }: { user: { name: string } }) => {
                         overflowY: "auto",
                         display: "flex",
                         flexDirection: "column",
-                        gap: 1
+                        gap: 1,
                     }}
                 >
-                    <Typography variant="body1">
-                        <b>Alice:</b> Hi!
-                    </Typography>
-                    <Typography variant="body1">
-                        <b>{user.name}:</b> How its going?
-                    </Typography>
+                    {messages.map((msg, idx) => (
+                        <Typography key={idx} variant="body1">
+                            <b>{msg.author}:</b> {msg.text}
+                        </Typography>
+                    ))}
                 </Box>
 
-                {/* input field */}
                 <Box display="flex" gap={1}>
                     <TextField
                         fullWidth
                         size="small"
                         placeholder="Type your message..."
+                        value={currentMessage}
+                        onChange={(e) => onMessageChange(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
                     />
-                    <Button variant="contained">Надіслати</Button>
+                    <Button variant="contained" onClick={onSendMessage}>
+                        Send
+                    </Button>
                 </Box>
             </Paper>
         </Box>
     );
 };
+

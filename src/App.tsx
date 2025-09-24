@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Login from "./components /Login.tsx";
-import {Container} from "@mui/material";
-import {Home} from "./components /Home.tsx";
-import {Profile} from "./components /Profile.tsx";
+import { Container } from "@mui/material";
+import { Profile } from "./components";
+import { LoginPage } from "./pages/LoginPage";
+import { HomePage } from "./pages/HomePage";
 
 export interface UserCredo {
     name: string;
@@ -12,17 +12,24 @@ export interface UserCredo {
 function App() {
     const [user, setUser] = useState<UserCredo | null>(null);
 
-    if (!user) return <Login onLogin={setUser} />;
+    if (!user) {
+        return <LoginPage onLogin={setUser} />;
+    }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, display: "flex", gap: 3, flexDirection: "column"}}>
+        <Container
+            maxWidth="lg"
+            sx={{ mt: 4, display: "flex", gap: 3, flexDirection: "column" }}
+        >
             <Profile user={user} />
-            <Home user={user} />
+            <HomePage user={user} />
         </Container>
     );
 }
 
 export default App;
+
+
 
 
 

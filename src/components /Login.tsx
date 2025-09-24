@@ -1,21 +1,16 @@
-import {useState} from "react";
 import {Avatar, Box, Button, Paper, TextField, Typography} from "@mui/material";
-import {PersonIcon} from "./PersonIcon.tsx";
-import type {UserCredo} from "../App.tsx";
+import { PersonIcon } from "./PersonIcon";
 
+interface LoginProps {
+    name: string;
+    password: string;
+    onNameChange: (value: string) => void;
+    onPasswordChange: (value: string) => void;
+    onSubmit: () => void;
+}
 
-
-export default function Login({ onLogin }: { onLogin: (user: UserCredo) => void }) {
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleLogin = () => {
-        if(name.trim() && password.trim()) {
-            onLogin({name,password});
-        }
-    };
+export const Login = ({name, password, onNameChange, onPasswordChange, onSubmit}: LoginProps) => {
     return (
-        //main container
         <Box
             display="flex"
             justifyContent="center"
@@ -23,51 +18,43 @@ export default function Login({ onLogin }: { onLogin: (user: UserCredo) => void 
             height="100vh"
             bgcolor="background.default"
         >
-            {/* Login form */}
-            <Paper elevation={6} sx={{padding: 4, minWidth: 320, textAlign: "center"}}>
-
-                {/* Avatar with user icon */}
-                <Avatar sx={{margin:"0 auto",bgcolor:"primary.main", mb:2}}>
-                    <PersonIcon/>
+            <Paper elevation={6} sx={{ padding: 4, minWidth: 320, textAlign: "center" }}>
+                <Avatar sx={{ margin: "0 auto", bgcolor: "primary.main", mb: 2 }}>
+                    <PersonIcon />
                 </Avatar>
-
-                {/* Header */}
                 <Typography variant="h5" mb={3}>
                     Enter your credentials to login
                 </Typography>
-
-                {/* Input fields */}
                 <TextField
                     fullWidth
                     label="Name"
                     value={name}
-                onChange={(e)=>setName(e.target.value)}
+                    onChange={(e) => onNameChange(e.target.value)}
                     margin="normal"
-                    onKeyDown={(e)=>e.key === "Enter" && handleLogin()}
+                    onKeyDown={(e) => e.key === "Enter" && onSubmit()}
                 />
                 <TextField
                     fullWidth
                     label="Password"
-                    type="text"
+                    type="password"
                     value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
+                    onChange={(e) => onPasswordChange(e.target.value)}
                     margin="normal"
-                    onKeyDown={(e)=>e.key === "Enter" && handleLogin()}
+                    onKeyDown={(e) => e.key === "Enter" && onSubmit()}
                 />
-
-                {/* Login button */}
                 <Button
                     fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={handleLogin}
+                    onClick={onSubmit}
                     sx={{ mt: 2, py: 1.5, fontSize: "16px" }}
                 >
                     Login
                 </Button>
             </Paper>
         </Box>
-    )
-}
+    );
+};
+
 
 

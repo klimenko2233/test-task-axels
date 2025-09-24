@@ -1,20 +1,10 @@
-import {
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
-    Typography,
-    Button,
-    Box,
-    IconButton, Divider
-} from "@mui/material";
+import {List,ListItem,ListItemButton,ListItemText,Typography,Button,Box,IconButton,Divider} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export const RoomList = () => {
     return (
         <Box>
-            {/* Title + create btn */}
             <Box
                 display="flex"
                 justifyContent="space-between"
@@ -33,7 +23,6 @@ export const RoomList = () => {
                 </Button>
             </Box>
             <Divider />
-            {/*  Rooms list */}
             <List sx={{ p: 0 }}>
                 {["General", "Frontend", "Backend", "Random"].map((room) => (
                     <ListItem
