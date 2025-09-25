@@ -3,6 +3,7 @@
 чат-додаток із груповими кімнатами.
 
 Реалізація:
+
 - Авторизацію користувача (будь-яка заглушка)
 - Створення кімнат
 - Відправлення/отримання повідомлень у WebSocket-режимі
@@ -12,14 +13,18 @@
 React, Redux-Saga, Socket.io, Material UI
 Mock API/WebSocket сервер (можна використати wss://ws.postman-echo.com/raw)
 ------------------------------------------------------------------------------
+
 # Getting Started
 
 ## Prerequisites
+
 - Node.js >= 18
 - npm or yarn
 
 ### Installation
+
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/klimenko2233/test-task-axels.git
 cd test-task-axels

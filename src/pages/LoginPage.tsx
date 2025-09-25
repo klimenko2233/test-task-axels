@@ -24,4 +24,3 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         />
     );
 };
-
