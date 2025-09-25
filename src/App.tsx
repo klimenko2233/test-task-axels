@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Container } from "@mui/material";
-import { Profile } from "./components ";
-import { HomePage, LoginPage } from "./pages";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { LoginPage, HomePage } from "./pages";
+import { useSelector } from "react-redux";
+import type { RootState } from "./store/store.ts";
 
 export interface UserCredo {
     name: string;
@@ -9,14 +9,18 @@ export interface UserCredo {
 }
 
 function App() {
-    const [user, setUser] = useState<UserCredo | null>(null);
-    if (!user) return <LoginPage onLogin={setUser}/>;
+    const user = useSelector((state: RootState) => state.user.user);
     return (
-        <Container maxWidth="lg"
-                   sx={{ mt: { xs: 2, sm: 3, md: 4 }, display: "flex", gap: { xs: 2, sm: 3 }, flexDirection: "column" }}>
-            <Profile user={user}/>
-            <HomePage user={user}/>
-        </Container>
+        <Router>
+            <Routes>
+                <Route path="/login" element={<LoginPage/>}/>
+                <Route
+                    path="/home"
+                    element={user ? <HomePage user={user}/> : <Navigate to="/login" replace/>}
+                />
+                <Route path="*" element={<Navigate to={user ? "/home" : "/login"} replace/>}/>
+            </Routes>
+        </Router>
     );
 }
 

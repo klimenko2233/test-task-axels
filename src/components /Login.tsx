@@ -19,12 +19,12 @@ export const Login = ({ name, password, onNameChange, onPasswordChange, onSubmit
                 Enter your credentials to login
             </Typography>
             <TextField fullWidth label="Name" value={name} margin="normal"
-                       onChange={(e) => onNameChange(e.target.value)}
-                       onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+                       onChange={(event) => onNameChange(event.target.value)}
+                       onKeyDown={(event) => event.key === "Enter" && onSubmit()}
             />
             <TextField fullWidth label="Password" type="password" value={password} margin="normal"
-                       onChange={(e) => onPasswordChange(e.target.value)}
-                       onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+                       onChange={(event) => onPasswordChange(event.target.value)}
+                       onKeyDown={(event) => event.key === "Enter" && onSubmit()}
             />
             <Button fullWidth variant="contained" color="primary" onClick={onSubmit}
                     sx={{ mt: 2, py: 1.5, fontSize: "16px" }}>
