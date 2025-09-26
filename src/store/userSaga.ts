@@ -28,7 +28,6 @@ function connectAndLogin({ name, password }: { name: string; password: string })
             try {
                 const data: UserCredo = JSON.parse(event.data);
                 resolve({ name: data.name, password: data.password });
-                resolve({ name: data.name, password: data.password });
             } catch {
                 reject(new Error("Invalid server response"));
             } finally {

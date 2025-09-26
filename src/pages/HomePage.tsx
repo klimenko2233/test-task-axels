@@ -1,34 +1,28 @@
 import { useState } from "react";
-import { Home } from "../components ";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../store/userSlice.ts";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { logout } from "../store/userSlice";
 import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Home } from "../components ";
 
-interface HomePageProps {
-    user: { name: string };
-}
-
-export const HomePage = ({ user }: HomePageProps) => {
-    const [currentRoom, setCurrentRoom] = useState("General");
-    const [messagesByRoom, setMessagesByRoom] = useState<Record<string, { author: string; text: string }[]>>(
-        {
-            General: [{ author: "Alice", text: "Hi!" }, { author: user.name, text: "How's it going?" }],
-            FirstRoom: [{ author: "Bob", text: "Welcome to FirstRoom" }],
-            AnotherRoom: [{ author: "Eve", text: "Another room here!" }],
-            Random: []
-        });
-
-    const [currentMessage, setCurrentMessage] = useState("");
-    const dispatch = useDispatch();
+export const HomePage = () => {
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    const user = useAppSelector((state) => state.user.user);
+
+    const [currentRoom, setCurrentRoom] = useState("General");
+    const [messages, setMessages] = useState<{ author: string; text: string }[]>([
+        { author: "Alice", text: "Hi!" },
+        { author: user?.name ?? "Me", text: "How's it going?" },
+    ]);
+    const [currentMessage, setCurrentMessage] = useState("");
+
+    if (!user) return null; // защита от анонимного доступа
 
     const handleSendMessage = () => {
         if (!currentMessage.trim()) return;
-        setMessagesByRoom({
-            ...messagesByRoom,
-            [currentRoom]: [...messagesByRoom[currentRoom], { author: user.name, text: currentMessage }]
-        });
+        setMessages([...messages, { author: user.name, text: currentMessage }]);
         setCurrentMessage("");
     };
 
@@ -48,7 +42,7 @@ export const HomePage = ({ user }: HomePageProps) => {
                 userName={user.name}
                 currentRoom={currentRoom}
                 onRoomChange={setCurrentRoom}
-                messages={messagesByRoom[currentRoom]}
+                messages={messages}
                 currentMessage={currentMessage}
                 onMessageChange={setCurrentMessage}
                 onSendMessage={handleSendMessage}
