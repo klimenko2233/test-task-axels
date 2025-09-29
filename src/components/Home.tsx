@@ -9,10 +9,16 @@ interface HomeProps {
     currentMessage: string;
     onMessageChange: (value: string) => void;
     onSendMessage: () => void;
+    isConnected: boolean;
 }
 
 export const Home = (
-    { userName, currentRoom, onRoomChange, messages, currentMessage, onMessageChange, onSendMessage }: HomeProps) => (
+    {
+        userName, currentRoom,
+        onRoomChange, messages,
+        currentMessage, onMessageChange,
+        onSendMessage, isConnected
+    }: HomeProps) => (
     <Box display="flex" flexDirection={{ xs: "column", md: "row" }} height={{ xs: "auto", md: "80vh" }} gap={2} pb={10}>
         <Paper elevation={3} sx={{ width: { xs: "100%", md: 260 }, p: 2, display: "flex", flexDirection: "column" }}>
             <RoomList currentRoom={currentRoom} onRoomChange={onRoomChange}/>
@@ -31,10 +37,11 @@ export const Home = (
             </Box>
             <Box display="flex" gap={1}>
                 <TextField fullWidth size="small" placeholder="Type your message..." value={currentMessage}
-                           onChange={(e) => onMessageChange(e.target.value)}
-                           onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
+                           onChange={(event) => onMessageChange(event.target.value)}
+                           onKeyDown={(event) => event.key === "Enter" && onSendMessage()}
+                           disabled={!isConnected}
                 />
-                <Button variant="contained" onClick={onSendMessage}>Send</Button>
+                <Button variant="contained" onClick={onSendMessage} disabled={!isConnected}>Send</Button>
             </Box>
         </Paper>
     </Box>
