@@ -4,11 +4,8 @@ import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { roomsActions, roomsSelectors } from "../store/ducks/rooms.duck.ts";
 import { authSelectors, chatActions, chatSelectors } from "../store/selectors/index.ts";
 
-
-
 export const HomePage = () => {
     const dispatch = useAppDispatch();
-
     const user = useAppSelector(authSelectors.user);
     const currentRoom = useAppSelector(roomsSelectors.currentRoom);
     const messagesByRoom = useAppSelector(chatSelectors.messagesByRoom);
