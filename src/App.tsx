@@ -1,22 +1,46 @@
-import { useState } from "react";
-import { Container } from "@mui/material";
-import { Profile } from "./components ";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
+import { useEffect } from "react";
+import { chatActions } from "./store/ducks/chat.duck";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { HomePage, LoginPage } from "./pages";
-
-export interface UserCredo {
-    name: string;
-    password: string;
-}
+import { Container } from "@mui/material";
+import { Profile } from "./components";
+import { authSelectors } from "./store/ducks/auth.duck";
 
 function App() {
-    const [user, setUser] = useState<UserCredo | null>(null);
-    if (!user) return <LoginPage onLogin={setUser}/>;
+    const dispatch = useAppDispatch();
+    const isAuthenticated = useAppSelector(authSelectors.isAuthenticated);
+    useEffect(() => {
+        if (!isAuthenticated) {
+            dispatch(chatActions.connectWebSocket());
+        }
+    }, [isAuthenticated,dispatch]);
+
     return (
-        <Container maxWidth="lg"
-                   sx={{ mt: { xs: 2, sm: 3, md: 4 }, display: "flex", gap: { xs: 2, sm: 3 }, flexDirection: "column" }}>
-            <Profile user={user}/>
-            <HomePage user={user}/>
-        </Container>
+        <Router>
+            <Routes>
+                <Route path="/login"
+                       element={ !isAuthenticated? (<LoginPage/>) : (<Navigate to="/" replace/>)}/>
+                <Route path="/"
+                    element={ isAuthenticated ? (
+                            <Container
+                                maxWidth="lg"
+                                sx={{
+                                    mt: { xs: 2, sm: 3, md: 4 },
+                                    display: "flex",
+                                    gap: { xs: 2, sm: 3 },
+                                    flexDirection: "column"
+                                }}
+                            >
+                                <Profile />
+                                <HomePage />
+                            </Container>
+                        ) : (<Navigate to="/login" replace />)
+                    }
+                />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
     );
 }
 

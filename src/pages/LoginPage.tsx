@@ -1,26 +1,13 @@
-import { useState } from "react";
-import type { UserCredo } from "../App.tsx";
-import { Login } from "../components ";
+import { useAppDispatch } from "../hooks/redux";
+import { authActions } from "../store/ducks/auth.duck";
+import { Login } from "../components";
 
-interface LoginPageProps {
-    onLogin: (user: UserCredo) => void;
-}
-
-export const LoginPage = ({ onLogin }: LoginPageProps) => {
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
+export const LoginPage = () => {
+    const dispatch = useAppDispatch();
 
     const handleLogin = () => {
-        if (name.trim() && password.trim()) onLogin({ name, password });
+        dispatch(authActions.login({ name: "user", password: "pass" })); // или любая другая логика
     };
 
-    return (
-        <Login
-            name={name}
-            password={password}
-            onNameChange={setName}
-            onPasswordChange={setPassword}
-            onSubmit={handleLogin}
-        />
-    );
+    return <Login onSubmit={handleLogin} />;
 };
