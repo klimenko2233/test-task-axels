@@ -1,14 +1,15 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { CreateRoomDialog } from "./CreateRoomDialog.tsx";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 describe("CreateRoomDialog", () => {
-    const mockOnClose = jest.fn();
-    const mockOnCreate = jest.fn();
+    const mockOnClose = vi.fn();
+    const mockOnCreate = vi.fn();
     const mockExistingRooms = ["General", "Random"];
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("should render dialog when open", () => {

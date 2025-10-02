@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Login } from "./Login";
+import { vi } from "vitest";
 
-const mockOnSubmit = jest.fn();
+const mockOnSubmit = vi.fn();
 
 describe("Login Component", () => {
     beforeEach(() => {
@@ -38,7 +39,7 @@ describe("Login Component", () => {
 
     it("should call onSubmit when form is submitted with valid data", async () => {
         const user = userEvent.setup();
-        const mockOnSubmit = jest.fn();
+        const mockOnSubmit = vi.fn();
         render(<Login onSubmit={mockOnSubmit} />);
 
         await user.type(screen.getByLabelText(/name/i), "John");

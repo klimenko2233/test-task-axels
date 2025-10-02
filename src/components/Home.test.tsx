@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { Home } from "./Home";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
+import { vi } from "vitest";
 
 const createMockStore = () =>
     configureStore({
@@ -19,20 +20,20 @@ const createMockStore = () =>
 const mockProps = {
     userName: "John Doe",
     currentRoom: "General",
-    onRoomChange: jest.fn(),
+    onRoomChange: vi.fn(),
     messages: [
         { author: "Alice", text: "Hi!" },
         { author: "Bob", text: "Hello!" }
     ],
     currentMessage: "",
-    onMessageChange: jest.fn(),
-    onSendMessage: jest.fn(),
+    onMessageChange: vi.fn(),
+    onSendMessage: vi.fn(),
     isConnected: true,
 };
 
 describe("Home Component", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("should render user info and current room", () => {
@@ -139,13 +140,63 @@ describe("Home Component", () => {
         expect(mockProps.onSendMessage).toHaveBeenCalledTimes(1);
     });
 
+    it("should display user message and echo message from server", () => {
+        const messagesWithEcho = [
+            { author: "John", text: "Hello everyone!" },
+            { author: "Echo Server", text: "Hello everyone!" }
+        ];
+
+        const propsWithEcho = {
+            ...mockProps,
+            messages: messagesWithEcho
+        };
+
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...propsWithEcho} />
+            </Provider>
+        );
+
+        expect(screen.getByText("John:")).toBeInTheDocument();
+        expect(screen.getByText("Echo Server:")).toBeInTheDocument();
+
+        const messages = screen.getAllByText("Hello everyone!");
+        expect(messages).toHaveLength(2);
+    });
+
+    it("should display multiple echo messages correctly", () => {
+        const multipleMessages = [
+            { author: "Alice", text: "First message" },
+            { author: "Echo Server", text: "First message" },
+            { author: "Bob", text: "Second message" },
+            { author: "Echo Server", text: "Second message" }
+        ];
+
+        const props = {
+            ...mockProps,
+            messages: multipleMessages
+        };
+
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...props} />
+            </Provider>
+        );
+
+        expect(screen.getByText("Alice:")).toBeInTheDocument();
+        expect(screen.getByText("Bob:")).toBeInTheDocument();
+        expect(screen.getAllByText("Echo Server:")).toHaveLength(2);
+
+        expect(screen.getAllByText("First message")).toHaveLength(2);
+        expect(screen.getAllByText("Second message")).toHaveLength(2);
+    });
+
     it("should match snapshot", () => {
         const { container } = render(
             <Provider store={createMockStore()}>
-                <Home {...mockProps}/>
+                <Home {...mockProps} />
             </Provider>
         );
         expect(container.firstChild).toMatchSnapshot();
     });
 });
-

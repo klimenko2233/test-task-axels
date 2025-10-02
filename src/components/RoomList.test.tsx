@@ -4,6 +4,7 @@ import { RoomList } from "./RoomList.tsx";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { MockRoom, MockRoomsState, MockStoreState } from "../test-utils/types";
+import { vi } from "vitest";
 
 interface MockCreateRoomDialogProps {
     open: boolean;
@@ -18,7 +19,7 @@ interface MockEditRoomDialogProps {
     roomName: string;
 }
 
-jest.mock("./dialogs/CreateRoomDialog", () => ({
+vi.mock("./dialogs/CreateRoomDialog", () => ({
     CreateRoomDialog: ({ open, onClose, onCreate }: MockCreateRoomDialogProps) =>
         open ? (
             <div data-testid="create-dialog">
@@ -29,7 +30,7 @@ jest.mock("./dialogs/CreateRoomDialog", () => ({
         ) : null
 }));
 
-jest.mock("./dialogs/EditRoomDialog", () => ({
+vi.mock("./dialogs/EditRoomDialog", () => ({
     EditRoomDialog: ({ open, onClose, onSave, roomName }: MockEditRoomDialogProps) =>
         open ? (
             <div data-testid="edit-dialog">
@@ -40,8 +41,8 @@ jest.mock("./dialogs/EditRoomDialog", () => ({
         ) : null
 }));
 
-const mockConfirm = jest.fn();
-const mockAlert = jest.fn();
+const mockConfirm = vi.fn();
+const mockAlert = vi.fn();
 Object.defineProperty(window, "confirm", { value: mockConfirm });
 Object.defineProperty(window, "alert", { value: mockAlert });
 
@@ -66,9 +67,9 @@ const createMockStore = (currentRoom = "General") => {
 };
 
 describe("RoomList Component", () => {
-    const mockOnRoomChange = jest.fn();
+    const mockOnRoomChange = vi.fn();
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         mockConfirm.mockReturnValue(true);
     });
 
