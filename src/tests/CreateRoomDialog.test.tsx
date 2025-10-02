@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { CreateRoomDialog } from "./CreateRoomDialog.tsx";
+import { CreateRoomDialog } from "../components/dialogs/CreateRoomDialog.tsx";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 

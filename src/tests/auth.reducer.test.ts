@@ -1,4 +1,4 @@
-import { authActions, authReducer } from "../auth.duck.ts";
+import { authActions, authReducer } from "../store/ducks/auth.duck.ts";
 
 describe("Auth Reducer - Unit Tests", () => {
     const initialState = {

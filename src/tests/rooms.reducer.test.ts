@@ -1,4 +1,4 @@
-import { roomsActions, roomsReducer } from "../rooms.duck.ts";
+import { roomsActions, roomsReducer } from "../store/ducks/rooms.duck.ts";
 import { expect } from "vitest";
 
 describe("Rooms Reducer - Unit Tests", () => {

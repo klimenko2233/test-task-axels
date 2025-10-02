@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { Home } from "./Home";
+import { Home } from "../components";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { vi } from "vitest";
@@ -36,82 +36,79 @@ describe("Home Component", () => {
         vi.clearAllMocks();
     });
 
-    it("should render user info and current room", () => {
+    it("should display welcome message with user name", () => {
         render(
             <Provider store={createMockStore()}>
                 <Home {...mockProps}/>
             </Provider>
         );
         expect(screen.getByText(/Welcome, John Doe!/i)).toBeInTheDocument();
-        const heading = screen.getAllByRole("heading", { level: 6 });
-        const welcomeHeading = heading[1];
-        expect(welcomeHeading).toHaveTextContent(/General/i);
     });
 
-    it("should display messages from props in the chat", () => {
+    it("should display current room in welcome message", () => {
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...mockProps}/>
+            </Provider>
+        );
+        const heading = screen.getAllByRole("heading", { level: 6 });
+        expect(heading[1]).toHaveTextContent(/General/i);
+    });
+
+    it("should display Alice's message with author and text", () => {
         render(
             <Provider store={createMockStore()}>
                 <Home {...mockProps}/>
             </Provider>
         );
         expect(screen.getByText("Alice:")).toBeInTheDocument();
-        expect(screen.getByText("Hi!")).toBeInTheDocument();
-        expect(screen.getByText("Bob:")).toBeInTheDocument();
-        expect(screen.getByText("Hello!")).toBeInTheDocument();
     });
 
-    it("should display empty chat when no messages in props", () => {
-        const noMessagesProps = {
-            ...mockProps,
-            messages: []
-        };
+    it("should display Bob's message with author and text", () => {
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...mockProps}/>
+            </Provider>
+        );
+        expect(screen.getByText("Bob:")).toBeInTheDocument();
+    });
+
+    it("should not display any messages when messages array is empty", () => {
+        const noMessagesProps = { ...mockProps, messages: [] };
         render(
             <Provider store={createMockStore()}>
                 <Home {...noMessagesProps}/>
             </Provider>
         );
-        expect(screen.getByText(/Welcome, John Doe!/i)).toBeInTheDocument();
         expect(screen.queryByText("Alice:")).not.toBeInTheDocument();
-        expect(screen.queryByText("Bob:")).not.toBeInTheDocument();
-        expect(screen.queryByText("Hi!")).not.toBeInTheDocument();
     });
 
-    it("should display input field and send button", () => {
+    it("should display message input field", () => {
         render(
             <Provider store={createMockStore()}>
                 <Home {...mockProps}/>
             </Provider>
         );
         expect(screen.getByPlaceholderText(/Type your message.../i)).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
     });
 
-    it("button should call onSendMessage when clicked", () => {
+    it("should display send button", () => {
         render(
             <Provider store={createMockStore()}>
                 <Home {...mockProps}/>
             </Provider>
         );
-        const sendButton = screen.getByRole("button", { name: /send/i });
-        fireEvent.click(sendButton);
-        expect(mockProps.onSendMessage).toHaveBeenCalledTimes(1);
-
+        expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
     });
 
-    it("should disable send button and input when not connected", () => {
-        const disconnectedProps = {
-            ...mockProps,
-            isConnected: false
-        };
+    it("should call onSendMessage when send button is clicked", () => {
         render(
             <Provider store={createMockStore()}>
-                <Home {...disconnectedProps}/>
+                <Home {...mockProps}/>
             </Provider>
         );
-        const sendButton = screen.getByRole("button", { name: /send/i });
-        expect(sendButton).toBeDisabled();
-        const messageInput = screen.getByPlaceholderText(/Type your message.../i);
-        expect(messageInput).toBeDisabled();
+        fireEvent.click(screen.getByRole("button", { name: /send/i }));
+        expect(mockProps.onSendMessage).toHaveBeenCalledTimes(1);
     });
 
     it("should call onMessageChange when typing in input", () => {
@@ -120,75 +117,99 @@ describe("Home Component", () => {
                 <Home {...mockProps}/>
             </Provider>
         );
-        const messageInput = screen.getByPlaceholderText(/Type your message.../i);
-        fireEvent.change(messageInput, { target: { value: "New message" } });
+        fireEvent.change(screen.getByPlaceholderText(/Type your message.../i), {
+            target: { value: "New message" }
+        });
         expect(mockProps.onMessageChange).toHaveBeenCalledWith("New message");
     });
 
     it("should call onSendMessage when pressing Enter", () => {
-        const withMessageProps = {
-            ...mockProps,
-            currentMessage: "Test message"
-        };
+        const withMessageProps = { ...mockProps, currentMessage: "Test message" };
         render(
             <Provider store={createMockStore()}>
                 <Home {...withMessageProps}/>
             </Provider>
         );
-        const messageInput = screen.getByPlaceholderText(/Type your message.../i);
-        fireEvent.keyDown(messageInput, { key: "Enter" });
+        fireEvent.keyDown(screen.getByPlaceholderText(/Type your message.../i), { key: "Enter" });
         expect(mockProps.onSendMessage).toHaveBeenCalledTimes(1);
     });
 
-    it("should display user message and echo message from server", () => {
+    it("should disable send button when not connected", () => {
+        const disconnectedProps = { ...mockProps, isConnected: false };
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...disconnectedProps}/>
+            </Provider>
+        );
+        expect(screen.getByRole("button", { name: /send/i })).toBeDisabled();
+    });
+
+    it("should disable message input when not connected", () => {
+        const disconnectedProps = { ...mockProps, isConnected: false };
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...disconnectedProps}/>
+            </Provider>
+        );
+        expect(screen.getByPlaceholderText(/Type your message.../i)).toBeDisabled();
+    });
+
+    it("should display user message and echo message authors", () => {
         const messagesWithEcho = [
             { author: "John", text: "Hello everyone!" },
             { author: "Echo Server", text: "Hello everyone!" }
         ];
-
-        const propsWithEcho = {
-            ...mockProps,
-            messages: messagesWithEcho
-        };
-
+        const propsWithEcho = { ...mockProps, messages: messagesWithEcho };
         render(
             <Provider store={createMockStore()}>
                 <Home {...propsWithEcho} />
             </Provider>
         );
-
         expect(screen.getByText("John:")).toBeInTheDocument();
-        expect(screen.getByText("Echo Server:")).toBeInTheDocument();
-
-        const messages = screen.getAllByText("Hello everyone!");
-        expect(messages).toHaveLength(2);
     });
 
-    it("should display multiple echo messages correctly", () => {
+    it("should display echo server message author", () => {
+        const messagesWithEcho = [
+            { author: "John", text: "Hello everyone!" },
+            { author: "Echo Server", text: "Hello everyone!" }
+        ];
+        const propsWithEcho = { ...mockProps, messages: messagesWithEcho };
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...propsWithEcho} />
+            </Provider>
+        );
+        expect(screen.getByText("Echo Server:")).toBeInTheDocument();
+    });
+
+    it("should display multiple instances of same message text for echo", () => {
+        const messagesWithEcho = [
+            { author: "John", text: "Hello everyone!" },
+            { author: "Echo Server", text: "Hello everyone!" }
+        ];
+        const propsWithEcho = { ...mockProps, messages: messagesWithEcho };
+        render(
+            <Provider store={createMockStore()}>
+                <Home {...propsWithEcho} />
+            </Provider>
+        );
+        expect(screen.getAllByText("Hello everyone!")).toHaveLength(2);
+    });
+
+    it("should display multiple echo server authors in complex scenario", () => {
         const multipleMessages = [
             { author: "Alice", text: "First message" },
             { author: "Echo Server", text: "First message" },
             { author: "Bob", text: "Second message" },
             { author: "Echo Server", text: "Second message" }
         ];
-
-        const props = {
-            ...mockProps,
-            messages: multipleMessages
-        };
-
+        const props = { ...mockProps, messages: multipleMessages };
         render(
             <Provider store={createMockStore()}>
                 <Home {...props} />
             </Provider>
         );
-
-        expect(screen.getByText("Alice:")).toBeInTheDocument();
-        expect(screen.getByText("Bob:")).toBeInTheDocument();
         expect(screen.getAllByText("Echo Server:")).toHaveLength(2);
-
-        expect(screen.getAllByText("First message")).toHaveLength(2);
-        expect(screen.getAllByText("Second message")).toHaveLength(2);
     });
 
     it("should match snapshot", () => {

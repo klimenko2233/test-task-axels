@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { chatReducer, chatActions } from "../chat.duck";
+import { chatReducer, chatActions } from "../store/ducks/chat.duck.ts";
 
 describe("Chat Reducer - Unit Tests", () => {
     const initialState = {
