@@ -5,9 +5,9 @@ import { Login } from "../components";
 export const LoginPage = () => {
     const dispatch = useAppDispatch();
 
-    const handleLogin = () => {
-        dispatch(authActions.login({ name: "user", password: "pass" })); // или любая другая логика
+    const handleLogin = (name: string, password: string) => {
+        dispatch(authActions.login({ name, password }));
     };
 
-    return <Login onSubmit={handleLogin} />;
+    return <Login onSubmit={handleLogin}/>;
 };

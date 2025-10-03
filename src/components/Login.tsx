@@ -4,7 +4,7 @@ import { PersonIcon } from "./PersonIcon";
 import { loginValidationSchema } from "../schemas/authValidation";
 
 interface LoginProps {
-    onSubmit: () => void;
+    onSubmit: (name: string, password: string) => void;
 }
 
 export const Login = ({ onSubmit }: LoginProps) => {
@@ -14,9 +14,9 @@ export const Login = ({ onSubmit }: LoginProps) => {
             password: "",
         },
         validationSchema: loginValidationSchema,
-        onSubmit: () => {
-            onSubmit();
-        },
+        onSubmit: (values) => {
+            onSubmit(values.name, values.password);
+        }
     });
 
     return (
