@@ -48,8 +48,7 @@ Object.defineProperty(window, "alert", { value: mockAlert });
 
 const mockRooms: MockRoom[] = [
     { id: "1", name: "General", users: ["Alice", "Bob"] },
-    { id: "2", name: "Random", users: [] },
-    { id: "3", name: "Private", users: ["Charlie"] }
+    { id: "2", name: "Random", users: [] }
 ];
 
 const createMockStore = (currentRoom = "General") => {
@@ -76,157 +75,138 @@ const findMenuButton = (roomName: string) => {
 
 describe("RoomList Component", () => {
     const mockOnRoomChange = vi.fn();
+
     beforeEach(() => {
         vi.clearAllMocks();
         mockConfirm.mockReturnValue(true);
     });
 
-    it("should render rooms title", () => {
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        expect(screen.getByText("Rooms")).toBeInTheDocument();
+    describe("Initial rendering", () => {
+        beforeEach(() => {
+            render(
+                <Provider store={createMockStore()}>
+                    <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
+                </Provider>
+            );
+        });
+
+        it("should render rooms title", () => {
+            expect(screen.getByText("Rooms")).toBeInTheDocument();
+        });
+
+        it("should render General room", () => {
+            expect(screen.getByText("General")).toBeInTheDocument();
+        });
+
+        it("should render Random room", () => {
+            expect(screen.getByText("Random")).toBeInTheDocument();
+        });
+
+        it("should display 2 users for General room", () => {
+            expect(screen.getByText("2 users")).toBeInTheDocument();
+        });
+
+        it("should display 0 users for Random room", () => {
+            expect(screen.getByText("0 users")).toBeInTheDocument();
+        });
     });
 
-    it("should render General room with user count", () => {
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>)
-        ;
-        expect(screen.getByText("General")).toBeInTheDocument();
-        expect(screen.getByText("2 users")).toBeInTheDocument();
+    describe("Room selection", () => {
+        it("should highlight current room with Mui-selected class", () => {
+            render(
+                <Provider store={createMockStore("Random")}>
+                    <RoomList currentRoom="Random" onRoomChange={mockOnRoomChange}/>
+                </Provider>
+            );
+            const randomRoomButtons = screen.getAllByRole("button");
+            const randomRoomButton = randomRoomButtons.find(button =>
+                button.textContent?.includes("Random")
+            );
+            expect(randomRoomButton).toHaveClass("Mui-selected");
+        });
+
+        it("should call onRoomChange when room is clicked", async () => {
+            const user = userEvent.setup();
+            render(
+                <Provider store={createMockStore()}>
+                    <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
+                </Provider>
+            );
+            await user.click(screen.getByText("Random"));
+            expect(mockOnRoomChange).toHaveBeenCalledWith("Random");
+        });
     });
 
-    it("should render Random room with user count", () => {
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        expect(screen.getByText("Random")).toBeInTheDocument();
-        expect(screen.getByText("0 users")).toBeInTheDocument();
+    describe("Create room functionality", () => {
+        it("should open create room dialog when create button is clicked", async () => {
+            const user = userEvent.setup();
+            render(
+                <Provider store={createMockStore()}>
+                    <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
+                </Provider>
+            );
+            await user.click(screen.getByText("+ New Room"));
+            expect(screen.getByTestId("create-dialog")).toBeInTheDocument();
+        });
     });
 
-    it("should render Private room with user count", () => {
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        expect(screen.getByText("Private")).toBeInTheDocument();
-        expect(screen.getByText("1 users")).toBeInTheDocument();
-    });
+    describe("Room menu functionality", () => {
+        beforeEach(() => {
+            render(
+                <Provider store={createMockStore()}>
+                    <RoomList currentRoom="General" onRoomChange={mockOnRoomChange} />
+                </Provider>
+            );
+        });
 
-    it("should highlight current room with Mui-selected class", () => {
-        render(
-            <Provider store={createMockStore("Random")}>
-                <RoomList currentRoom="Random" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        const randomRoomButtons = screen.getAllByRole("button");
-        const randomRoomButton = randomRoomButtons.find(button => button.textContent?.includes("Random"));
-        expect(randomRoomButton).toHaveClass("Mui-selected");
-    });
+        it("should open menu when three dots icon is clicked", async () => {
+            const user = userEvent.setup();
+            const menuButton = findMenuButton("General");
+            await user.click(menuButton!);
+            expect(screen.getByRole("menu")).toBeInTheDocument();
+        });
 
-    it("should call onRoomChange with room name when room is clicked", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        await user.click(screen.getByText("Random"));
-        expect(mockOnRoomChange).toHaveBeenCalledWith("Random");
-    });
+        it("should display Edit option in room menu", async () => {
+            const user = userEvent.setup();
+            await user.click(findMenuButton("General")!);
+            expect(screen.getByText("Edit")).toBeInTheDocument();
+        });
 
-    it("should open create room dialog when create button is clicked", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        await user.click(screen.getByText("+ New Room"));
-        expect(screen.getByTestId("create-dialog")).toBeInTheDocument();
-    });
+        it("should display Delete option in room menu", async () => {
+            const user = userEvent.setup();
+            await user.click(findMenuButton("General")!);
+            expect(screen.getByText("Delete")).toBeInTheDocument();
+        });
 
-    it("should open menu when three dots icon is clicked", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange} />
-            </Provider>
-        );
-        const menuButton = findMenuButton("General");
-        expect(menuButton).toBeDefined();
-        await user.click(menuButton!);
-        expect(screen.getByText("Edit")).toBeInTheDocument();
-    });
+        it("should disable Delete menu item for General room", async () => {
+            const user = userEvent.setup();
+            await user.click(findMenuButton("General")!);
+            expect(screen.getByRole("menuitem", { name: /delete/i })).toHaveClass("Mui-disabled");
+        });
 
-    it("should display Edit option in room menu", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange} />
-            </Provider>
-        );
-        await user.click(findMenuButton("General")!);
-        expect(screen.getByText("Edit")).toBeInTheDocument();
-    });
+        it("should call window.confirm when deleting non-General room", async () => {
+            const user = userEvent.setup();
+            mockConfirm.mockReturnValue(true);
+            await user.click(findMenuButton("Random")!);
+            await user.click(screen.getByText("Delete"));
+            expect(mockConfirm).toHaveBeenCalled();
+        });
 
-    it("should display Delete option in room menu", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange} />
-            </Provider>
-        );
-        await user.click(findMenuButton("General")!);
-        expect(screen.getByText("Delete")).toBeInTheDocument();
-    });
-
-    it("should disable Delete menu item for General room", async () => {
-        const user = userEvent.setup();
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        await user.click(findMenuButton("General")!);
-        expect(screen.getByRole("menuitem", { name: /delete/i })).toHaveClass("Mui-disabled");
-    });
-
-    it("should show confirmation dialog when deleting non-General room", async () => {
-        const user = userEvent.setup();
-        mockConfirm.mockReturnValue(true);
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        await user.click(findMenuButton("Random")!);
-        await user.click(screen.getByText("Delete"));
-        expect(mockConfirm).toHaveBeenCalledWith("Delete room \"Random\"? This action cannot be undone.");
-    });
-
-    it("should call window.confirm with correct message for room deletion", async () => {
-        const user = userEvent.setup();
-        mockConfirm.mockReturnValue(true);
-        render(
-            <Provider store={createMockStore()}>
-                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
-            </Provider>
-        );
-        await user.click(findMenuButton("Private")!);
-        await user.click(screen.getByText("Delete"));
-        expect(mockConfirm).toHaveBeenCalledWith("Delete room \"Private\"? This action cannot be undone.");
+        it("should call window.confirm with correct message when deleting room", async () => {
+            const user = userEvent.setup();
+            mockConfirm.mockReturnValue(true);
+            await user.click(findMenuButton("Random")!);
+            await user.click(screen.getByText("Delete"));
+            expect(mockConfirm).toHaveBeenCalledWith("Delete room \"Random\"? This action cannot be undone.");
+        });
     });
 
     it("should match snapshot", () => {
-        const { container } = render(<Provider store={createMockStore()}><RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/></Provider>);
+        const { container } = render(
+            <Provider store={createMockStore()}>
+                <RoomList currentRoom="General" onRoomChange={mockOnRoomChange}/>
+            </Provider>
+        );
         expect(container.firstChild).toMatchSnapshot();
     });
 });

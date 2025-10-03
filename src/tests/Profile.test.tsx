@@ -22,106 +22,138 @@ const createMockStore = (initialState: MockState) =>
     });
 
 describe("Profile Component", () => {
-    it("should render user name when user is logged in", () => {
-        const mockStore = createMockStore({
-            auth: {
-                user: { id: "1", name: "John Doe", isOnline: true },
-                isAuthenticated: true
-            },
-            chat: {
-                isConnected: true
-            }
+    describe("When user is authenticated", () => {
+        it("should display user name", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "John Doe", isOnline: true },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: true
+                }
+            });
+            render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            expect(screen.getByText("John Doe")).toBeInTheDocument();
         });
 
-        render(
-            <Provider store={mockStore}>
-                <Profile />
-            </Provider>
-        );
+        it("should display online status when connected", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "John Doe", isOnline: true },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: true
+                }
+            });
+            render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            expect(screen.getByText("Online")).toBeInTheDocument();
+        });
 
-        expect(screen.getByText("John Doe")).toBeInTheDocument();
-        expect(screen.getByText("Online")).toBeInTheDocument();
+        it("should display offline status when not connected", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "Jane Doe", isOnline: false },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: false
+                }
+            });
+            render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            expect(screen.getByText("Offline")).toBeInTheDocument();
+        });
+
+        it("should render logout button", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "John Doe", isOnline: true },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: true
+                }
+            });
+            render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            const logoutButton = screen.getByRole("button", { name: /logout/i });
+            expect(logoutButton).toBeInTheDocument();
+        });
+
+        it("should allow clicking logout button", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "John Doe", isOnline: true },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: true
+                }
+            });
+            render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            const logoutButton = screen.getByRole("button", { name: /logout/i });
+            fireEvent.click(logoutButton);
+            expect(logoutButton).toBeInTheDocument();
+        });
     });
 
-    it("should show offline status when not connected", () => {
-        const mockStore = createMockStore({
-            auth: {
-                user: { id: "1", name: "Jane Doe", isOnline: false },
-                isAuthenticated: true
-            },
-            chat: {
-                isConnected: false
-            }
+    describe("When user is not authenticated", () => {
+        it("should not render any content", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: null,
+                    isAuthenticated: false
+                },
+                chat: {
+                    isConnected: false
+                }
+            });
+            const { container } = render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            expect(container.firstChild).toBeNull();
         });
-
-        render(
-            <Provider store={mockStore}>
-                <Profile />
-            </Provider>
-        );
-
-        expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-        expect(screen.getByText("Offline")).toBeInTheDocument();
     });
 
-    it("should not render when user is not authenticated", () => {
-        const mockStore = createMockStore({
-            auth: {
-                user: null,
-                isAuthenticated: false
-            },
-            chat: {
-                isConnected: false
-            }
+    describe("Snapshot tests", () => {
+        it("should match snapshot when user is online", () => {
+            const mockStore = createMockStore({
+                auth: {
+                    user: { id: "1", name: "John Doe", isOnline: true },
+                    isAuthenticated: true
+                },
+                chat: {
+                    isConnected: true
+                }
+            });
+            const { container } = render(
+                <Provider store={mockStore}>
+                    <Profile/>
+                </Provider>
+            );
+            expect(container.firstChild).toMatchSnapshot();
         });
-
-        const { container } = render(
-            <Provider store={mockStore}>
-                <Profile />
-            </Provider>
-        );
-
-        expect(container.firstChild).toBeNull();
-    });
-
-    it("should have logout button", () => {
-        const mockStore = createMockStore({
-            auth: {
-                user: { id: "1", name: "John Doe", isOnline: true },
-                isAuthenticated: true
-            },
-            chat: {
-                isConnected: true
-            }
-        });
-
-        render(
-            <Provider store={mockStore}>
-                <Profile />
-            </Provider>
-        );
-
-        const logoutButton = screen.getByRole("button", { name: /logout/i });
-        expect(logoutButton).toBeInTheDocument();
-        fireEvent.click(logoutButton);
-    });
-    it("should match snapshot when user is online", () => {
-        const mockStore = createMockStore({
-            auth: {
-                user: { id: "1", name: "John Doe", isOnline: true },
-                isAuthenticated: true
-            },
-            chat: {
-                isConnected: true
-            }
-        });
-
-        const { container } = render(
-            <Provider store={mockStore}>
-                <Profile />
-            </Provider>
-        );
-
-        expect(container.firstChild).toMatchSnapshot();
     });
 });
