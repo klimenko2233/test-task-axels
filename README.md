@@ -1,17 +1,26 @@
-Реальний чат з WebSocket
+# Реальний чат з WebSocket
 
-чат-додаток із груповими кімнатами.
+Чат-додаток із груповими кімнатами.
 
-Реалізація:
+## Реалізація
 
-- Авторизацію користувача (будь-яка заглушка)
-- Створення кімнат
-- Відправлення/отримання повідомлень у WebSocket-режимі
-- Показати онлайн-статуси
+-  Авторизацію користувача (будь-яка заглушка)
+-  Створення кімнат
+-  Відправлення/отримання повідомлень у WebSocket-режимі
+-  Показати онлайн-статуси
+-  Покриття коду unit-тестами (113 тестів)
 
-Технології:
-React, Redux-Saga, Socket.io, Material UI
-Mock API/WebSocket сервер (можна використати wss://ws.postman-echo.com/raw)
+## Технології
+
+- React
+- Redux-Saga
+- Socket.io
+- Material UI
+- Vitest (тестування)
+- React Testing Library
+- TypeScript
+
+Mock API/WebSocket сервер: `wss://ws.postman-echo.com/raw`
 ------------------------------------------------------------------------------
 
 # Getting Started
@@ -40,5 +49,15 @@ Login
 Use any username and password to login .
 
 After login, you can see chat rooms and start sending messages.
+
+Testing
+The project is fully covered by unit tests (71 tests) using Vitest and React Testing Library.
+Run tests: npm test
+Run tests in watch mode (for development): npm run test:watch
+79 tests - React components (Snapshot tests + functionality)
+34 tests - Redux reducers 
+
+
+
 
 ```
