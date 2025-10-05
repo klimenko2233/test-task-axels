@@ -8,7 +8,7 @@
 -  Створення кімнат
 -  Відправлення/отримання повідомлень у WebSocket-режимі
 -  Показати онлайн-статуси
--  Покриття коду unit-тестами (71 тест)
+-  Покриття коду unit-тестами (113 тестів)
 
 ## Технології
 
@@ -54,10 +54,8 @@ Testing
 The project is fully covered by unit tests (71 tests) using Vitest and React Testing Library.
 Run tests: npm test
 Run tests in watch mode (for development): npm run test:watch
-Run tests with code coverage: npm run test:coverage
-
-54 tests - React components (Snapshot tests + functionality)
-16 tests - Redux reducers 
+79 tests - React components (Snapshot tests + functionality)
+34 tests - Redux reducers 
 
 
 
